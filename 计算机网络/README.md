@@ -7,4 +7,4 @@
 # 内容
 
 1.WebSocket
-
+2.AJAX
