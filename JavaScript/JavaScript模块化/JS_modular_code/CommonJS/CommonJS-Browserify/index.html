@@ -10,8 +10,21 @@
         CommonJS中在浏览器端运行要经过编译
      -->
     <!-- <script type="text/javascript" src="./main.js"></script> -->
-    <!-- 具体文件和下载browserify明天去公司再弄 -->
-    <script type="text/javascript" src="./main.js"></script>
+    <!-- 
+        1.安装browserify
+        npm install browserify -g
+        2.打包js
+       在JS_modular_code\CommonJS\CommonJS-Browserify路径下执行 browserify main.js -o bundle.js
+        3.引用生成的bundle.js文件
+     -->
+
+   <!-- 此时，在浏览器打开index.html文件，打开控制台
+        结果是：
+            moudle1 m1()
+            module2 m2()
+            module3 m3() 
+-->
+    <script type="text/javascript" src="./bundle.js"></script>
 </head>
 <body>
     
