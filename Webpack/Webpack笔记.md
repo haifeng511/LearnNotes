@@ -84,7 +84,7 @@ const config = {
 module.exports = config;
 ```
 
-### 2.5 模块（module）
+### 2.5 模块（mode）
 
 通过选择 `development(开发环境)` 或 `production(生产环境)` 之中的一个，来设置 `mode` 参数，你可以启用相应模式下的 webpack 内置的优化
 
@@ -96,7 +96,7 @@ module.exports = {
 
 
 
-## 3. Webpack具体使用
+## 3. Webpack基本使用
 
 安装webpack
 
@@ -152,6 +152,10 @@ npm install --save-dev style-loader css-loader less less-loader
 
 webpack打包样式资源需要进行配置webpack.config.js ，配置文件信息如下，配置信息好了之后，执行webpack,在index.html引入打包好的bundle.js文件可以查看页面的样式发生变化
 
+使用MiniCssExtractPlugin插件，提取JS中的CSS成单独文件
+
+使用postcss-loader进行CSS兼容性处理
+
 ```js
 /**
  * webpack.config.js webpack的配置文件
@@ -161,6 +165,14 @@ webpack打包样式资源需要进行配置webpack.config.js ，配置文件信�
 
 // 这里使用node的知识，用resolve拼接绝对路径
 const path = require('path');
+// 提取js中的css成单独文件
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+//压缩CSS
+const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
+
+// 设置nodejs环境变量
+// process.env.NODE_ENV = 'development';
 
 //  webpack配置
 module.exports = {
@@ -184,8 +196,43 @@ module.exports = {
                     // use数组中loader执行顺序，从右到做，从下到上，依次进行
                     // 创建style标签，将js中的样式资源插入进行，添加到head标签中生效
                     'style-loader',
+                     // 这个loader取代style-loader。作用：提取js中的css成单独文件
+      			    //  MiniCssExtractPlugin.loader,
                     // 将css文件变成commonjs模块加载到js文件中，里面内容是样式字符串
-                    'css-loader'
+                    'css-loader',
+                     /*
+                        css兼容性处理：postcss --> postcss-loader postcss-preset-env
+
+                        帮postcss找到package.json中browserslist里面的配置，通过配置加载指定的css兼容性样式
+
+                        "browserslist": {
+                          // 开发环境 --> 设置node环境变量：process.env.NODE_ENV = development
+                          "development": [
+                            "last 1 chrome version",
+                            "last 1 firefox version",
+                            "last 1 safari version"
+                          ],
+                          // 生产环境：默认是看生产环境
+                          "production": [
+                            ">0.2%",
+                            "not dead",
+                            "not op_mini all"
+                          ]
+                        }
+                      */
+                      // 使用loader的默认配置
+                      // 'postcss-loader',
+                      // 修改loader的配置
+                      {
+                        loader: 'postcss-loader',
+                        options: {
+                          ident: 'postcss',
+                          plugins: () => [
+                            // postcss的插件
+                            require('postcss-preset-env')()
+                          ]
+                        }
+                      }
                 ]
             },
             {
@@ -203,7 +250,14 @@ module.exports = {
     //  plugins的配置
     plugins: [
         // plugins的详细配置
+         new MiniCssExtractPlugin({
+          // 对输出的css文件进行重命名
+          filename: 'css/built.css'
+        })
+          // 压缩css
+    	new OptimizeCssAssetsWebpackPlugin()
     ],
+  ],
     // 模式
     mode: 'development'
     //    mode:'production'
@@ -213,7 +267,7 @@ module.exports = {
 
 ### 3.3 打包html资源
 
-打包html资源需要下载HTML插件
+打包html资源需要下载HTML插件html-webpack-plugin 可以配置
 
 ```
 npm i html-webpack-plugin -D
@@ -247,7 +301,14 @@ module.exports = {
         // 需求：需要有结构的HTML文件
         new HtmlWebpackPlugin({
             // 复制 './src/index.html' 文件，并自动引入打包输出的所有资源（JS/CSS）,生成的文件是dist目录下的index.html
-            template: './src/index.html'
+            template: './src/index.html',
+             // 压缩html代码
+              minify: {
+                // 移除空格
+                collapseWhitespace: true,
+                // 移除注释
+                removeComments: true
+              }
         })
     ],
     mode: 'development'
@@ -328,4 +389,127 @@ module.exports = {
 }
 
 ```
+
+### 3.5 打包其他资源
+
+file-loader 和 url-loader 可以接收并加载任何文件，然后将其输出到构建目录。这就是说，我们可以将它们用于任何类型的文件，包括字体
+
+JSON 支持实际上是webpack内置的，也就是说 import Data from './data.json' 默认将正常运行。要导入 CSV、TSV 和 XML，可以使用 csv-loader 和 xml-loader
+
+### 3.6 devServer
+
+开发服务器配置，内容放在mode下一行
+
+.运行指令: npx webpack-dev-server
+
+```js
+ mode: 'development',
+// 开发服务器 devServer：用来自动化（自动编译，自动打开浏览器，自动刷新浏览器~~）
+  // 特点：只会在内存中编译打包，不会有任何输出
+  // 启动devServer指令为：npx webpack-dev-server
+  devServer: {
+    // 项目构建后路径
+    contentBase: resolve(__dirname, 'build'),
+    // 启动gzip压缩
+    compress: true,
+    // 端口号
+    port: 3000,
+    // 自动打开浏览器
+    open: true
+  }
+```
+
+
+
+### 3.7 JS语法检查和兼容性处理
+
+语法检查使用使用eslint-loader
+
+兼容性处理使用babel-loader
+
+```js
+const { resolve } = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+  entry: './src/js/index.js',
+  output: {
+    filename: 'js/built.js',
+    path: resolve(__dirname, 'build')
+  },
+  module: {
+    rules: [
+        
+        /*
+        语法检查： eslint-loader  eslint
+          注意：只检查自己写的源代码，第三方的库是不用检查的
+          设置检查规则：
+            package.json中eslintConfig中设置~
+              "eslintConfig": {
+                "extends": "airbnb-base"
+              }
+            airbnb --> eslint-config-airbnb-base  eslint-plugin-import eslint
+      */
+         {
+            test: /\.js$/,
+            exclude: /node_modules/,
+            loader: 'eslint-loader',
+            options: {
+              // 自动修复eslint的错误
+              fix: true
+            }
+          },
+        
+      /*
+        js兼容性处理：babel-loader @babel/core 
+          1. 基本js兼容性处理 --> @babel/preset-env
+            问题：只能转换基本语法，如promise高级语法不能转换
+          2. 全部js兼容性处理 --> @babel/polyfill  
+            问题：我只要解决部分兼容性问题，但是将所有兼容性代码全部引入，体积太大了~
+          3. 需要做兼容性处理的就做：按需加载  --> core-js
+      */  
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        options: {
+          // 预设：指示babel做怎么样的兼容性处理
+          presets: [
+            [
+              '@babel/preset-env',
+              {
+                // 按需加载
+                useBuiltIns: 'usage',
+                // 指定core-js版本
+                corejs: {
+                  version: 3
+                },
+                // 指定兼容性做到哪个版本浏览器
+                targets: {
+                  chrome: '60',
+                  firefox: '60',
+                  ie: '9',
+                  safari: '10',
+                  edge: '17'
+                }
+              }
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './src/index.html'
+    })
+  ],
+  mode: 'development'
+};
+
+```
+
+
+
+## 4.  Webpack优化
 
