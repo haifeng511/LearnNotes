@@ -97,7 +97,7 @@ s.charAt(1) // "b"
 'abc'.charCodeAt(1) // 98
 ```
 
-#### 4.2 字符串连接和填充
+#### 4.2 字符串连接、重复、填充
 
 ##### String.prototype.concat()
 
@@ -341,7 +341,9 @@ s.trimEnd() // "  abc"
 
 ##### String.prototype.match()
 
-`match`方法用于确定原字符串是否匹配某个子字符串
+`match`方法用于返回一个字符串匹配正则表达式的结果
+
+如果参数不是正则表达式，会隐式地使用 new RegExp(obj) 将其转换为一个 RegExp，如果没有参数，会得到一个包含空字符串的数组
 
 **返回一个数组，成员为匹配的第一个字符串**。如果没有找到匹配，则返回`null`。
 
@@ -353,11 +355,30 @@ s.trimEnd() // "  abc"
 var matches = 'cat, bat, sat, fat'.match('at');
 matches.index // 1
 matches.input // "cat, bat, sat, fat"
+
+const paragraph = 'The quick brown fox jumps over the lazy dog. It barked.';
+const regex = /[A-Z]/g;
+const found = paragraph.match(regex);
+console.log(found);
+// expected output: Array ["T", "I"]
+
 ```
 
 ##### String.prototype.matchAll()
 
-`matchAll()`方法返回一个正则表达式在当前字符串的所有匹配
+`matchAll()`方法返回一个包含所有匹配正则表达式的结果及分组捕获组的迭代器
+
+```js
+const regexp = /t(e)(st(\d?))/g;
+const str = 'test1test2';
+const array = [...str.matchAll(regexp)];
+
+console.log(array[0]);
+// expected output: Array ["test1", "e", "st1", "1"]
+console.log(array[1]);
+// expected output: Array ["test2", "e", "st2", "2"]
+
+```
 
 ##### String.prototype.search()
 
