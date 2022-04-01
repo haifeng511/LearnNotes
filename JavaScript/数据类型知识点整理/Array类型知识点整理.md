@@ -269,7 +269,7 @@ arr.unshift('a', 'b') // 4
 arr // [ 'a', 'b', 'c', 'd' ]
 ```
 
-#### 6.2 数组连接和合并
+#### 6.2 数组元素连接和合并
 
 ##### join()
 
@@ -379,7 +379,7 @@ a // ["a", "b", "c", "d", 1, 2]
 
 ##### map()
 
-`map()`方法将数组的所有成员依次传入参数函数，然后把每一次的执行结果组成一个新数组返回。该方法不改变数组
+`map()`方法将数组的所有成员依次传入参数函数，然后把每一次的执行结果组成一个新数组返回。该方法不改变数组，主要是不改变数组的值，而对于对象来说，不改变的是数组的中对象的地址，如果是改变对象中的值还是会改变
 
 `map()`方法接受一个函数作为参数。该函数调用时，`map()`方法向它传入三个参数：当前成员、当前位置和数组本身。
 
@@ -391,6 +391,18 @@ numbers.map(function (n) {
 // [2, 3, 4]
 numbers
 // [1, 2, 3]
+var objs = [{value:'1'},{value:'2'},{value:'3'}];
+objs.map( (item) => {
+  item.value = item.value +'new'
+});
+// [undefined,undefined,undifined]  因为在map函数中没有返回,如果需要返回则使用下面方法
+/**
+objs.map( (item) => ({
+  value: item.value + 'new'
+}));
+*/
+objs
+// [{value:'1new'},{value:'2new'},{value:'2new'}];
 ```
 
 `map()`方法还可以接受第二个参数，用来绑定回调函数内部的`this`变量
@@ -552,7 +564,7 @@ a.lastIndexOf(2) // 3
 
 [1, 5, 10, 15].findIndex(function(value, index, arr) {
   return value > 9;
-}) // 
+}) // 2
 ```
 
 ##### includes()
