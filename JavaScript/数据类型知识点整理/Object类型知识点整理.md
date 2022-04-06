@@ -210,7 +210,7 @@ Object.getOwnPropertyDescriptor(obj, 'p')
 
 ##### Object.getOwnPropertyDescriptors()
 
-S2017 引入了`Object.getOwnPropertyDescriptors()`方法，返回指定对象所有自身属性（非继承属性）的描述对象。
+ES2017 引入了`Object.getOwnPropertyDescriptors()`方法，返回指定对象所有自身属性（非继承属性）的描述对象。
 
 ```javascript
 const obj = {
