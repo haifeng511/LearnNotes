@@ -4,6 +4,8 @@
 
 ### 1.起步
 
+#### 1.1 如何查看源码
+
 vue源码的github地址：https://github.com/vuejs/vue
 
 Vue2工具函数源码目录在：vue/src/shared/util.js 
@@ -16,7 +18,17 @@ Flow是JavaScript的类型检查器，Vue.js 的源码利用了Flow 做了静态
 
 本文学习源码仓库中的[打包后的 dist/vue.js 14行到279行](https://github.com/vuejs/vue/blob/dev/dist/vue.js)
 
+#### 1.2 需要的知识点
 
+JS基本数据类型了解
+
+闭包
+
+原型
+
+正则表达式
+
+apply、bind
 
 ### 2.工具函数
 
@@ -644,7 +656,7 @@ function looseIndexOf (arr, val) {
 
 #### 2.24 once 确保函数只执行一次
 
-**利用闭包特性，存储状态**
+利用闭包特性，存储状态，无论函数怎么调用，只执行一次
 
 ```js
 /**
@@ -659,16 +671,6 @@ function once (fn) {
     }
   }
 }
-
-
-const fn1 = once(function(){
-  console.log('哎嘿，无论你怎么调用，我只执行一次');
-});
-
-fn1(); // '哎嘿，无论你怎么调用，我只执行一次'
-fn1(); // 不输出
-fn1(); // 不输出
-fn1(); // 不输出
 ```
 
 #### 2.25 生命周期等
@@ -698,3 +700,8 @@ var LIFECYCLE_HOOKS = [
 ];
 ```
 
+### 3. 参考资源
+
+[若川源码共读Vue2工具函数](https://juejin.cn/post/7024276020731592741)
+
+[GitHub本文学习内容地址](https://github.com/vuejs/vue/blob/dev/dist/vue.js)
