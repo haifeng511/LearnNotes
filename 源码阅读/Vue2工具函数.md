@@ -213,6 +213,22 @@ Array是自己有定义toString()方法的，是返回数值元素的字符串�
   2,
   2
 ]'
+
+如果这个对象有自己的自定义方法是走String(val)，调用自己的toString()方法 
+let obj = {};
+obj.toString = function () {  
+    return '[object Object]111';
+}
+var _toString = Object.prototype.toString;
+function isPlainObject(obj) {
+    return _toString.call(obj) === '[object Object]'
+}
+
+console.log(obj.toString()); // [object Object]111
+console.log(_toString.call(obj)); // [object Object]
+console.log(isPlainObject(obj)); // true
+console.log(obj.toString == _toString); // false
+console.log(String(obj)); //[object Object]111
 ```
 
 ```js
