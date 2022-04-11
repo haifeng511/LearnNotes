@@ -34,6 +34,8 @@ apply、bind
 
 #### 2.1 emptyObject
 
+emptyObject是不能通过.运算符直接赋值，只能通过原型改变对象，目前看到的有将emptyObject赋值给scopedSlots，之后再研究下
+
 ```js
   /* 
    	冻结一个空对象，Object.freeze()冻结的对象不能增、删、改属性
@@ -376,7 +378,7 @@ hasOwn({}, 'toString') // false
 
 #### 2.20 cached 缓存
 
-利用闭包特性，缓存数据，这地方不太懂，这个||的关系
+利用闭包特性，缓存数据，这地方不太懂，这个||的关系，感觉是如果缓存中存在则直接取值，如果不存在则进行存储
 
 ```js
 /**
@@ -467,7 +469,7 @@ var bind = Function.prototype.bind
   : polyfillBind;
 ```
 
-简单来说就是兼容了老版本浏览器不支持原生的 `bind` 函数。同时兼容写法，对参数的多少做出了判断，使用`call`和`apply`实现，据说参数多适合用 `apply`，少用 `call` 性能更好。
+兼容了老版本浏览器不支持原生的 `bind` 函数。同时兼容写法，对参数的多少做出了判断，使用`call`和`apply`实现，参数多适合用 `apply`，少用 `call` 性能更好。
 
 #### 2.25 toArray 把类数组转成真正的数组
 
@@ -705,3 +707,12 @@ var LIFECYCLE_HOOKS = [
 [若川源码共读Vue2工具函数](https://juejin.cn/post/7024276020731592741)
 
 [GitHub本文学习内容地址](https://github.com/vuejs/vue/blob/dev/dist/vue.js)
+
+### 4. 小Tips
+**分享指定行号高亮的代码给其他人**
+
+在Github代码左侧边点击选中当前行则会高亮，浏览器URL链接则会改变，如果是多行按住Shift进行多选，感觉应该是跟world中的一样
+
+**如何查看工具函数的应用场景**
+
+在源代码网页处直接搜索工具函数的名字，就能看到其他相关代码，但是目前自己还是需要多学习下，之后再回来补充相关内容
